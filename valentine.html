@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reetika my baby, Will You Be My Valentine? ❤️</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #ff758c, #ff7eb3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      z-index: 10;
+      width: 360px;
+    }
+
+    h1 {
+      color: #ff3b6f;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #444;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 14px 26px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin: 12px;
+      transition: all 0.3s ease;
+    }
+
+    #yes {
+      background: #ff3b6f;
+      color: white;
+    }
+
+    #no {
+      background: #ddd;
+      color: #333;
+      position: absolute;
+      animation: shake 0.3s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-2px); }
+      50% { transform: translateX(2px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+      z-index: 1;
+    }
+
+    .photo {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 20px;
+      object-fit: cover;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      z-index: 2;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.6);
+        opacity: 0;
+      }
+      20% { opacity: 1; }
+      100% {
+        transform: translateY(-15vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      20% { opacity: 1; }
+      100% {
+        transform: translateY(-10vh) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sounds -->
+  <audio id="bgMusic" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="yaySound">
+    <source src="https://www.myinstants.com/media/sounds/yay.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="kissSound">
+    <source src="https://www.myinstants.com/media/sounds/kiss.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card">
+    <h1>Baby ❤️</h1>
+    <p>Life is better and way more fun with you.</p>
+    <p>So I have this one important question…</p>
+
+    <h2>Will you be my Valentine? 👉🏼👈🏼</h2>
+
+    <button id="yes">YESSSSS</button>
+    <button id="no">Yuck. What the fuck</button>
+
+    <div class="hint">Touch anywhere for surprise</div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const music = document.getElementById("bgMusic");
+    const yaySound = document.getElementById("yaySound");
+    const kissSound = document.getElementById("kissSound");
+
+    const photos = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg","8.jpg","9.jpg"];
+
+    // Start music on first click
+    document.body.addEventListener("click", () => {
+      if (music.paused) {
+        music.volume = 0.5;
+        music.play();
+      }
+    }, { once: true });
+
+    // YES button grows
+    let yesScale = 1;
+    yesBtn.addEventListener("mouseover", () => {
+      yesScale += 0.15;
+      yesBtn.style.transform = `scale(${yesScale})`;
+    });
+
+    // NO button runs away
+    noBtn.addEventListener("mouseover", () => {
+      const x = Math.random() * (window.innerWidth - 120);
+      const y = Math.random() * (window.innerHeight - 60);
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    });
+
+    // YES click
+    yesBtn.addEventListener("click", () => {
+      music.volume = 0.6;
+      yaySound.play();
+      setTimeout(() => kissSound.play(), 400);
+
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200, 100, 300]);
+      }
+
+      // Speed up hearts and photos after YES
+      clearInterval(heartInterval);
+      clearInterval(photoInterval);
+      heartInterval = setInterval(createHeart, 120);
+      photoInterval = setInterval(createPhoto, 300);
+
+      document.body.innerHTML = `
+        <div style="text-align:center; color:white;">
+          <h1 style="font-size:48px;">YAYYYYY 💘💘💘</h1>
+          <p style="font-size:22px;">Sanuuu, you just made my heart very very happy 🥹</p>
+          <p style="font-size:20px;">Happy Valentine’s Day, my love ❤️</p>
+        </div>
+      `;
+    });
+
+    // Floating hearts
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 15 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 4 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+
+    // Floating photos
+    function createPhoto() {
+      const img = document.createElement("img");
+      img.className = "photo";
+      img.src = photos[Math.floor(Math.random() * photos.length)];
+      img.style.left = Math.random() * 90 + "vw";
+      img.style.animationDuration = Math.random() * 4 + 5 + "s";
+      document.body.appendChild(img);
+      setTimeout(() => img.remove(), 9000);
+    }
+
+    // Intervals
+    let heartInterval = setInterval(createHeart, 300);
+    let photoInterval = setInterval(createPhoto, 1200);
+  </script>
+
+</body>
+</html>
